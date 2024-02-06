@@ -1,0 +1,545 @@
+---
+title: "Trabajo final"
+author: 
+  name: "Crispthofer Rincon"
+  affiliation: "Amafrocol"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+      theme: journal
+      code_folding: show
+      toc: yes
+      toc_float: yes
+      toc_depth: 1
+      collapsed: true
+      smooth_scroll: false
+      number_section: yes
+      css: styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F)
+```
+<div>
+  <img src="trabajo_final_template/logo1.png" style="width:auto;height: 30rem;">
+</div>
+
+```{r}
+# Getting data
+library(gapminder)
+library(ggplot2)
+library(plotly)
+library(dplyr)
+library(readxl)
+data <- read_xlsx("trabajo_final_template/datos_trabajo_final.xlsx")
+
+# summary(data)
+# 
+# head(data)
+# tail(data)
+# 
+data <- na.omit(data)
+# summary(data)
+# names(data)
+# data$GENERO
+
+# conversión de los head de la tabla a mayuscula
+names(data) <- toupper(names(data))
+# correccion observaciones con departamento en miniscula
+data <- data %>%
+  mutate(DEPARTAMENTO = toupper(DEPARTAMENTO))
+
+
+# crear funciones para evitar multiplicar lineas de codigo
+
+# generar tabla de frecuencia
+generar_tabla_frecuencia <- function(col_variable) {
+  # verificar variable tipo factor
+  if (!is.factor(col_variable)) {
+    stop("Debe ser tipo factor")
+  }
+  # tabla de frecuencia
+  frecuencia <- table(col_variable)
+  # convertir a data frame
+  frecuencia <- as.data.frame(frecuencia)
+
+  names(frecuencia) <- c("Nivel", "Frecuencia")
+
+  return (frecuencia)
+}
+
+
+# funcion crear factor
+crear_factor <- function(data, name_var) {
+
+  if (name_var == "GENERO") {
+      return (factor(
+        data[[name_var]], 
+        levels = c(1, 2), 
+        labels = c("Masculino", "Femenino")
+      ))
+  } else if (name_var == "PRESUNTO AUTOR") {
+      return (factor(
+        data[[name_var]], 
+        levels = c(1:12), 
+        labels = c("Ejército Nacional", "Policía Nacional", "ESMAD", "ELN",
+                   
+                   "FARC-EP", "FARC + Ejercito Nacional", "Disidencias FARC-EP", 
+                   "Grupos Herederos \ndel Paramilitarismo", "Grupos Herederos \ndel Paramilitarismo y Ejército", 
+                   "Paramilitares", "Particulares", "Sin Identificar")
+      ))
+  } else if (name_var == "CATEGORIA MODUS") {
+      return (factor(
+        data[[name_var]],
+        levels = c(1:8, "M"), 
+        labels = c("Atentado colectivo", "Atentado individual", "Combates",
+                   "Desaparecido","Ejecución Extrajudicial", "Retén",
+                   "Bomba","Enfrentamiento con \nla fuerza pública", "Sin información")
+        ))
+  } else if (name_var == "TIPO DE ARMA") {
+      return (factor(
+        data[[name_var]],
+        levels = c(1:8, "M"), 
+        labels = c("Arma Blanca", "Arma de Fuego", "Arma Blanca y Arma de Fuego",
+                   "Asfixia","Bombas", "Golpes", "Golpes y armas blancas", 
+                   "Golpes y arma fuego", "Sin información")
+        )
+      )
+    }
+}
+
+
+# generar color para variable GENERO
+genero_color <- function(name_var, color_bar) {
+    if (name_var == "GENERO") {
+      return (c("lightblue2", "pink1"))
+    }
+    return (color_bar)
+  }
+
+
+# grafica de funciones
+grafica_frecuencia <- function(data, variable, titulo, x_txt, y_txt, color_bar) {
+  # data, datos filtrados por departamento
+
+  # convertir a factor
+  # crear_factor(data = data, name_var = variable)
+  if (variable != "AÑO"){
+    data[[variable]] <- crear_factor(data = data, name_var = variable)
+  } else {
+    data[[variable]] <- factor(data[[variable]])
+  }
+
+  data_frecuencia <- generar_tabla_frecuencia(data[[variable]])
+  # Solo datos mayores a cero (0)
+  data_frecuencia <- subset(data_frecuencia, Frecuencia > 0)
+
+  # crear grafico
+  g <- data_frecuencia %>%
+      ggplot(
+        aes(x = Nivel, y = Frecuencia,
+          text= paste(
+            paste(x_txt, Nivel, sep = ": "),
+            "<br>Frecuencia: ", Frecuencia
+            )
+          )
+        ) +
+      geom_bar(
+        stat= "identity", # count
+        # verifica si la variable es GENERO para diferenciar barras
+        fill= genero_color(
+          name_var = variable, color_bar = color_bar
+          )
+        ) +
+      theme_minimal() +
+      theme(
+        # ajustar leyendas de variables
+        axis.text.x = element_text(angle = 30, hjust = 1, size = 8)
+            ) +
+      labs(
+        title = paste(titulo, x_txt),
+        x = x_txt, y = y_txt
+      )
+
+  g_interactivo <- ggplotly(g, tooltip = "text")
+
+  g_interactivo
+}
+```
+
+
+# Nariño {.tabset .tabset-pills}
+
+```{r}
+# datos para Nariño
+data_narino <- data[data$DEPARTAMENTO == "NARIÑO", ]
+```
+
+## Género
+```{r}
+grafica_frecuencia(
+  data = data_narino,
+  "GENERO",
+  titulo = "Frecuencia por",
+  x_txt = "Género",
+  y_txt = "Frecuencia",
+  color_bar = "lightblue2"
+  )
+```
+
+- Análisis:
+Se observa que los líderes masculinos o sus familiares masculinos son los mas afectados en cuanto a asesinatos y/o desapariciones en los espacios rurales, ligeramente seguido por lideres de genero femenino, en el departamento de Nariño entre los años 2017 y 2021.
+
+## Casos registrados por año
+```{r}
+grafica_frecuencia(
+  data = data_narino,
+  "AÑO",
+  titulo = "Frecuencia por",
+  x_txt = "Año",
+  y_txt = "Frecuencia",
+  color_bar = "lightblue2"
+  )
+```
+- Análisis:
+La distribución de violencia o casos registrados en Nariño no es regular entre los periodos revisados. El año más afectado fue 2018, con 8 casos registrados. El año 2021 presenta el registro mas bajo, que puede estar afectado por menor socialización debido al periodo de pandemia entre mediados 2020 y primer semestre de 2021. Los años 2019 y 2020 presentan un comportamiento mas estable.
+
+
+## Presunto autor
+
+```{r}
+grafica_frecuencia(
+  data = data_narino,
+  "PRESUNTO AUTOR",
+  titulo = "Frecuencia por",
+  x_txt = "Presunto autor",
+  y_txt = "Frecuencia",
+  color_bar = "lightblue2"
+  )
+```
+
+- Análisis:
+Los datos muestran que la violencia en Nariño es perpetrada principalmente por grupos armados ilegales. El presunto autor más frecuente corresponde a grupos no identificados, seguido de herederos del Paramilitarismo, Disidencias FARC-EP y ELN.
+
+## Categoria modus operandi
+
+```{r}
+grafica_frecuencia(
+  data = data_narino,
+  "CATEGORIA MODUS",
+  titulo = "Frecuencia por",
+  x_txt = "Modus operandi",
+  y_txt = "Frecuencia",
+  color_bar = "lightblue2"
+  )
+```
+
+- Análisis:
+De acuerdo al estudio, se observa que el modus operandi más frecuente en Nariño es mediante atentado individual (el lider se encuentra solo(a)), seguido de atentados colectivos (en presencia de amigos, familiares, o espacio publico...). Esto puede inducir a proponer que los atentados se realizan individualmente con el fin de que los presuntos autores no logren ser identificados con facilidad.
+
+## Tipo de arma
+
+```{r}
+grafica_frecuencia(
+  data = data_narino,
+  "TIPO DE ARMA",
+  titulo = "Frecuencia por",
+  x_txt = "Tipo de arma",
+  y_txt = "Frecuencia",
+  color_bar = "lightblue2"
+  )
+```
+- Análisis:
+De acuerdo al estudio, se observa que el Arma de Fuego es el tipo de arma mas usado por los perpetradores, en Nariño. Indicando una alta presencia de actores armados ilegales en esta región.
+
+
+
+# Cauca {.tabset .tabset-pills}
+
+```{r}
+# datos para Cauca
+data_cauca <- data[data$DEPARTAMENTO == "CAUCA", ]
+```
+
+## Género
+```{r}
+grafica_frecuencia(
+  data = data_cauca,
+  "GENERO",
+  titulo = "Frecuencia por",
+  x_txt = "Género",
+  y_txt = "Frecuencia",
+  color_bar = "lightgreen"
+  )
+```
+
+- Análisis:
+Se observa que los líderes masculinos o sus familiares masculinos son altamente afectados en cuanto a asesinatos y/o desapariciones en los espacios rurales, y con un valor muy minimo los lideres de genero femenino, en el departamento de Cauca entre los años 2017 y 2021.
+
+
+## Casos registrados por año
+```{r}
+grafica_frecuencia(
+  data = data_cauca,
+  "AÑO",
+  titulo = "Frecuencia por",
+  x_txt = "Año",
+  y_txt = "Frecuencia",
+  color_bar = "lightgreen"
+  )
+```
+- Análisis:
+La distribución de violencia o casos registrados en Cauca es estable entre el 2017 y 2019. El año más afectado fue 2020, con 31 casos registrados. El año 2021 presenta el registro mas bajo, que puede estar afectado por menor socialización debido al periodo de pandemia entre mediados 2020 y primer semestre de 2021. La estabilización de varios de los años estudiados puede considerarse un comportamiento habitual, pero muy lamentable para los lideres y lideresas de la región.
+
+## Presunto autor
+
+```{r}
+grafica_frecuencia(
+  data = data_cauca,
+  "PRESUNTO AUTOR",
+  titulo = "Frecuencia por",
+  x_txt = "Presunto autor",
+  y_txt = "Frecuencia",
+  color_bar = "lightgreen"
+  )
+```
+
+- Análisis:
+Los datos muestran que la violencia en Cauca es perpetrada en una muy baja proporción por grupos legales, Ejército Nacional y ESMAD. El presunto autor más frecuente corresponde a grupos no identificados con 62 casos registrados, seguido de Disidencias FARC-EP. Se puede observar una amplia variedad de perpetradores (grupos ilegales) contra los lideres y lideresas sociales de esta región.
+
+## Categoria modus operandi
+
+```{r}
+grafica_frecuencia(
+  data = data_cauca,
+  "CATEGORIA MODUS",
+  titulo = "Frecuencia por",
+  x_txt = "Modus operandi",
+  y_txt = "Frecuencia",
+  color_bar = "lightgreen"
+  )
+```
+
+- Análisis:
+De acuerdo al estudio, se observa que el modus operandi más frecuente en Cauca es mediante atentado individual (el lider se encuentra solo(a)), seguido de atentados colectivos (en presencia de amigos, familiares, o espacio publico...). Esto puede inducir  a proponer que los atentados se realizan individualmente con el fin de que los autores no logren ser identificados con facilidad.
+
+## Tipo de arma
+
+```{r}
+grafica_frecuencia(
+  data = data_cauca,
+  "TIPO DE ARMA",
+  titulo = "Frecuencia por",
+  x_txt = "Tipo de arma",
+  y_txt = "Frecuencia",
+  color_bar = "lightgreen"
+  )
+```
+- Análisis:
+De acuerdo al estudio, se observa que el Arma de Fuego es el tipo de arma mas usado por los perpetradores, en Cauca. A pesar de que existan algunos registros con arma de fuego indirectamente, de alguna manera se involucra este tipo de arma letal. A su vez esto indica una alta presencia de actores armados ilegales en esta región.
+
+
+
+# Valle del Cauca {.tabset .tabset-pills}
+
+```{r}
+# datos para Valle del Cauca
+data_vallecauca <- data[data$DEPARTAMENTO == "VALLE DEL CAUCA", ]
+```
+
+## Género
+```{r}
+grafica_frecuencia(
+  data = data_vallecauca,
+  "GENERO",
+  titulo = "Frecuencia por",
+  x_txt = "Género",
+  y_txt = "Frecuencia",
+  color_bar = "orange1"
+  )
+```
+- Análisis:
+Se observa que los líderes masculinos o sus familiares masculinos son altamente afectados en cuanto a asesinatos y/o desapariciones en los espacios rurales, y con un valor muy minimo los lideres de genero femenino, en el departamento de Valle del Cauca entre los años 2017 y 2021.
+
+## Casos registrados por año
+```{r}
+grafica_frecuencia(
+  data = data_vallecauca,
+  "AÑO",
+  titulo = "Frecuencia por",
+  x_txt = "Año",
+  y_txt = "Frecuencia",
+  color_bar = "orange1"
+  )
+```
+- Análisis:
+La distribución de violencia o casos registrados en el valle de Cauca presenta una tendecia decreciente en el periodo estudiado 2017 a 2021. El año más afectado fue 2017, con 6 casos registrados. El año 2021 presenta el registro mas bajo, consecuente con la tendencia decreciente en el estudio, a pesar del periodo de pandemia entre mediados 2020 y primer semestre de 2021 este no afecto significativamente la tendecia decreciente. Puede considerarse un comportamiento satisfactorio para los lideres y lideresas de esta región.
+
+## Presunto autor
+
+```{r}
+grafica_frecuencia(
+  data = data_vallecauca,
+  "PRESUNTO AUTOR",
+  titulo = "Frecuencia por",
+  x_txt = "Presunto autor",
+  y_txt = "Frecuencia",
+  color_bar = "orange1"
+  )
+```
+
+- Análisis:
+Los datos muestran que la violencia en Valle del Cauca es perpetrada principalmente por grupos armados ilegales. El presunto autor más frecuente corresponde a grupos no identificados con 15 casos registrados, seguido de particulares y Grupos herederos del paramilitarismo.
+
+## Categoria modus operandi
+
+```{r}
+grafica_frecuencia(
+  data = data_vallecauca,
+  "CATEGORIA MODUS",
+  titulo = "Frecuencia por",
+  x_txt = "Modus operandi",
+  y_txt = "Frecuencia",
+  color_bar = "orange1"
+  )
+```
+
+- Análisis:
+De acuerdo al estudio, en Valle del Cauca se registran dos modus operandi. El más frecuente  es mediante atentado individual (el lider se encuentra solo(a)), y atentados colectivos (en presencia de amigos, familiares, o espacio publico...). Esto puede inducir  a proponer que los atentados se realizan individualmente con el fin de que los autores no logren ser identificados con facilidad.
+
+## Tipo de arma
+
+```{r}
+grafica_frecuencia(
+  data = data_vallecauca,
+  "TIPO DE ARMA",
+  titulo = "Frecuencia por",
+  x_txt = "Tipo de arma",
+  y_txt = "Frecuencia",
+  color_bar = "orange1"
+  )
+```
+- Análisis:
+De acuerdo al estudio, se observa que el Arma de Fuego es el tipo de arma mas usado por los perpetradores, en Valle del Cauca. Aunque existen registros con arma de fuego indirectamente, de alguna manera se involucra este tipo de arma letal. A su vez esto indica una alta presencia de actores armados ilegales en esta región.
+
+
+
+# Chocó {.tabset .tabset-pills}
+
+```{r}
+# datos para Chocó
+data_choco <- data[data$DEPARTAMENTO == "CHOCO", ]
+```
+
+## Género
+```{r}
+grafica_frecuencia(
+  data = data_choco,
+  "GENERO",
+  titulo = "Frecuencia por",
+  x_txt = "Género",
+  y_txt = "Frecuencia",
+  color_bar = "yellow2"
+  )
+```
+- Análisis:
+Se observa que los líderes masculinos o sus familiares masculinos son altamente afectados en cuanto a asesinatos y/o desapariciones en los espacios rurales, y con un valor muy minimo los lideres de genero femenino, en el departamento de Chocó entre los años 2017 y 2021.
+
+## Casos registrados por año
+```{r}
+grafica_frecuencia(
+  data = data_choco,
+  "AÑO",
+  titulo = "Frecuencia por",
+  x_txt = "Año",
+  y_txt = "Frecuencia",
+  color_bar = "yellow2"
+  )
+```
+- Análisis:
+La distribución de violencia o casos registrados en el Chocó presenta una tendencia decreciente en cuatro (4) de los cinco (5) años del periodo estudiado, 2017 a 2021. El año más afectado fue 2017, con 9 casos registrados. El año 2020 presenta el segundo registro mas alto, y es un año atipico, de acuerdo a casos registrados, ya que rompe con la tendencia decreciente observada. A pesar del periodo de pandemia entre mediados 2020 y primer semestre de 2021 este no afecto significativamente la tendecia decreciente. El año 2021 fue el menos afectado con un (1) caso registrado. Puede considerarse un comportamiento aliviador para los lideres y lideresas de esta región.
+
+## Presunto autor
+
+```{r}
+grafica_frecuencia(
+  data = data_choco,
+  "PRESUNTO AUTOR",
+  titulo = "Frecuencia por",
+  x_txt = "Presunto autor",
+  y_txt = "Frecuencia",
+  color_bar = "yellow2"
+  )
+```
+
+- Análisis:
+Los datos muestran que la violencia en Chocó es perpetrada principalmente por grupos armados ilegales. Los presuntos autores más frecuentes corresponde a grupos no identificados, herederos del Paramilitarismo y ELN. Existe una muy baja participación de grupos legales, como es el caso del Ejército Nacional.
+
+## Categoria modus operandi
+
+```{r}
+grafica_frecuencia(
+  data = data_choco,
+  "CATEGORIA MODUS",
+  titulo = "Frecuencia por",
+  x_txt = "Modus operandi",
+  y_txt = "Frecuencia",
+  color_bar = "yellow2"
+  )
+```
+
+- Análisis:
+De acuerdo al estudio, en Chocó se observa que el modus operandi más frecuente más frecuente es mediante atentado individual (el lider se encuentra solo(a)), seguido de atentados colectivos (en presencia de amigos, familiares, o espacio publico...). Esto puede inducir  a proponer que los atentados se realizan individualmente con el fin de que los autores no logren ser identificados con facilidad.
+
+## Tipo de arma
+
+```{r}
+grafica_frecuencia(
+  data = data_choco,
+  "TIPO DE ARMA",
+  titulo = "Frecuencia por",
+  x_txt = "Tipo de arma",
+  y_txt = "Frecuencia",
+  color_bar = "yellow2"
+  )
+```
+- Análisis:
+De acuerdo al estudio, se observa que el Arma de Fuego es el tipo de arma mas usado por los perpetradores, en Chocó. A su vez esto indica una alta presencia de actores armados ilegales en esta región.
+
+
+# Conclusiones
+
+- El departamento del Cauca presenta el mayor número de flajelos registrados contra lideres masculinos en el periodo de estudio. A pesar de que hay una menor participación de lideres femeninos en este estudio, no se puede concluir que esta sea una hipotesis para indicar que a nivel nacional haya menor particpación femenina en el campo de liderazgo social.
+
+- Los casos registrados en 2020 presenta un "repique" o crecimiento que rompe con la tendencia decreciente de varios departamentos. Se puede argumentar que este año se afecto por el levantamiento social en contra de medidas politicas del gobierno de ese momento, las cuales se argumentaba que perjudicaban las condiciones socio-economicas de gran parte de la población, por lo que la participación de lideres y lideresas fue mas visible, haciendolos tambien objetivos para diferentes actores de la violencia a nivel nacional.
+
+- Hay una alta relación entre el presunto autor no identificado y el modus operandi con atentado individual, ya que este modus operandi evita una identificación clara de los perpetradores, y por ende una baja respuesta investigativa de las autoridades correspondientes. Esto en si demuestra que los grupos armados ilegales perpetran violencia con impunidad.
+
+- La población de estos departamentos es vulnerable a la violencia. Puede argumentarse bajo  una serie de factores, incluyendo pobreza urbana y rural, desigualdad y exclusión social.
+
+- Para abordar la violencia en estos departamentos, es necesario abordar las causas estructurales de la violencia; economias ilegales, abandono estatala, entre otros. Esto incluye fortalecer las instituciones estatales, promover el desarrollo social y económico, y construir una cultura de paz.
+
+
+# Notas
+Para un análisis profundo puede referirse al archivo 
+<strong>
+  <a href="https://www.observatoriodetierras.org/wp-content/uploads/2021/04/Base-de-datos-l%C3%ADderes-asesinados_2021.xlsx" target= "_blank">
+    Base de datos líderes asesinados 2021
+  </a>
+</strong>.
+Allí encontrará los datos para todos los departamentos del país desde el año 2005.
+
+
+
+<br>
+<hr>
+
+<div style="text-align: center;">
+  <p>
+    <strong>Construcción de informes en R</strong><br>
+    <strong>
+      Desarrollado por: <a href="https://www.linkedin.com/in/carmurrain" target="blank">Crispthofer Rincon</a>
+    </strong><br>
+  <strong>2023.</strong>
+  </p>
+</div>

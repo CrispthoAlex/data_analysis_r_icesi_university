@@ -1,0 +1,218 @@
+---
+title: "Taller Clase 6"
+author: 
+  name: "Crispthofer Rincon"
+  affiliation: "Amafrocol"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+      theme: journal
+      code_folding: show
+      toc: yes
+      toc_float: yes
+      toc_depth: 1
+      collapsed: true
+      smooth_scroll: false
+      number_section: yes
+      css: styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+<div>
+  <img src="datascientist.jpg" style="width:auto;height: 40rem;">
+<div/>
+
+```{r}
+# Getting data
+library(gapminder)
+library(ggplot2)
+library(plotly)
+data <- data("gapminder")
+```
+
+# Gráficos {.tabset .tabset-pills}
+
+## Gráfico de barras interactivo
+
+Este gráfico muestra la esperanza de vida promedio en cada continente en el año 2007.
+
+```{r}
+EVP_grafico_barras <- gapminder %>%
+  filter(year == 2007) %>%
+  group_by(continent) %>%
+  summarise( lifeExpMean = mean(lifeExp)) %>%
+  ggplot(
+    aes(x = continent, y = lifeExpMean, 
+        text = paste(
+          "Continente:", continent,
+          "<br>Esperanza de vida:", round(lifeExpMean, 2)
+          ))
+    ) +
+  geom_bar(
+    stat = "identity", fill = "skyblue"
+    ) +
+  labs(
+    title = "Esperanza de Vida Promedio por Continente (2007)", 
+    x = "Continente", y = "Esperanza de Vida Promedio") +
+  theme_minimal()
+
+
+EVP_grafico_barras <- ggplotly(EVP_grafico_barras, tooltip = "text")
+
+EVP_grafico_barras
+```
+
+- Interpretación:
+
+Se observa que en el continente de Africa la esperanza de vida promedio corresponde a 54.81 años. En este continente  la esprenza de vida se la puede considerar como una variable afectada por factores como acceso a la atención medica, baja nutrición, bajo acceso a la educación e inseguridad de los ciudadanos. A diferencia del continente Africano, el continente con mayor esperanza de vida promedio es Oceania, con 80.72 años, la cual puede estar expresada por sistemas de salud avanzados e incluyentes, mejores capacidades nutricionales para sus habitantes y sistemas educativos mas robustos que favorecen las condiciones de los ciudadanos.
+
+El continente de Oceania es seguido, en orden decreciente, por el continente Europeo, con un promedio de esperanza de vida de 77.65 años, el cual contempla similares servicios robustos de atención a sus ciudadanos. El continente seguido es el Americano, con una esperanza de vida promedio de 73.61 años, este promedio es impulsado por paises de la zona norte americana y algunas economias de la zona centro y sur de america.
+
+El continente Asiatico posee una esperanza de vida promedio de 70.73 años, ubicandose por encima del continente Africano y por debajo de continente Americano.
+
+## Gráfico de lineas
+
+Este gráfico muestra la evolución del PIB percápita de Colombia de 1952 a 2007. Note que este gráfico no tiene que ser interactivo.
+
+```{r}
+PIBpercap_colombia_grafico_lineas <- gapminder %>%
+  filter(country == "Colombia") %>%
+  ggplot(
+    aes(x = year, y = gdpPercap)
+    ) +
+  geom_line() +
+  labs(
+    title = "Evolución PIB percápita de Colombia 1952 - 2007", 
+    x = "Año", y = "PIB percápita ($US)") +
+  theme_minimal()
+
+
+PIBpercap_colombia_grafico_lineas
+```
+
+- Interpretación:
+
+Se puede observar que el PIB per cápita en Colombia ha crecido constantemente durante el período en cuestión, pero con una aceleración relativamente lenta.
+
+Este crecimiento lento puede estar asociado a una inestabilidad politica que decayo en gran parte del periodo estudiado, que tuvo como vertientes la violencia y la desigualdad.
+
+Debido a la expansión petrolera el PIB per capita colombiano se mantuvo en constante crecimiento. Sin embargo para los años 90's, se presento una desaceleración en el PIB per capita.
+
+A pesar de esto, el PIB per capita se recupero, presentando un constante crecimiento aproximandamente desde el año 2002 hasta el año de corte 2007.
+
+
+## Gráfico de dispersión interactivo
+
+Este gráfico muestra el PIB percápita y la expectativa de vida al nacer por país en el año 2007.
+
+```{r}
+
+PIBpercap_lifeExp_grafico_puntos <- gapminder %>%
+  filter(year == 2007) %>%
+  ggplot(
+    aes(
+      x = gdpPercap, y = lifeExp, color = country,
+      text = paste(
+          "Pais: ", country,
+          "<br>Año: ", year,
+          "<br>Esperanza de vida: ",
+          round(lifeExp, 2)
+          )
+      )
+    ) +
+  geom_point() +
+  labs(
+    title = "PIB percápita vs Expectativa de vida en el año 2007", 
+    x = "PIB percápita", y = "Esperanza de vida (años)",
+    colour = "País"
+    ) +
+  theme_minimal()
+
+PIBpercap_lifeExp_grafico_puntos <- ggplotly(PIBpercap_lifeExp_grafico_puntos, tooltip = "text")
+
+PIBpercap_lifeExp_grafico_puntos
+
+```
+
+- Interpretación:
+
+En el gráfico se puede observar que paises con un PIB per capita más alto pueden contar con una expectativa de vida más alta. Esto guarda relación con el PIB per capita, el cual indica el nivel de desarrollo economico de un país. Entre mejor sean los niveles de PIB percapita esto es porque hay una tendencia a tener mejores sistemas de salud, acceso a la educación y mejores niveles de nutrición poblacional.
+
+Se presentan algunas excepciones como Cuba, Costa Rica o Chile debido a que estos países han invertido considerablemente en su sistema de salud y educación, contribuyendo a mejorar la salud de su población.
+
+Alineandonos con lo establecido por el PIB per capita y su relación con la esperanza de vida, se puede manifestar que los paises desarrollados puedan contar con una mejor expectativa de vida que los paises en desarrollo.
+
+
+## Gráfico Boxplot
+
+Boxplot de la esperanza de vida al nacer por continente para 2007.
+
+```{r}
+
+lifeExp_2007_grafico_boxplot <- gapminder %>%
+  filter(year == 2007) %>%
+  group_by(continent) %>%
+  ggplot(
+    aes( x = continent, y = lifeExp )
+    ) +
+  geom_boxplot(fill = "skyblue", color = "blue4") +
+  labs(
+    title = "Expectativa de vida por continente en el año 2007",
+    x = "Continente", y = "Esperanza de vida al nacer (años)") +
+  theme_minimal()
+
+lifeExp_2007_grafico_boxplot <- ggplotly(lifeExp_2007_grafico_boxplot)
+
+lifeExp_2007_grafico_boxplot
+
+```
+
+- Interpretación:
+
+Se observa una expectativa de vida  mas homogenea en el continente de Oceania, por encima de los 80 años, que expresa factores favorable en el desarrollo de su población.
+
+En cuanto al continente de Africa se observa que la expectativa de vida ubica a la población entre el 25% y el 75% con edades entre 47.51 a 59.45 años. Este continente presenta una alta inestabilidad en las condiciones de vida de sus habitantes, lo que proporciona un amplio rango en los valores de esperanza de vida.
+
+
+
+# Tabla interactiva {.tabset .tabset-pills}
+
+Tabla de resumen filtrando los datos para el año 2007.
+
+```{r}
+library(kableExtra)
+
+table_personalized <- gapminder %>%
+  filter(year == 2007) %>%
+  group_by(continent) %>%
+  summarise(
+    "Media Esperanza Vida" = round(mean(lifeExp), 2),
+    "Media PIB Percapita" = round(mean(gdpPercap), 3),
+    "Media poblacion" = round(mean(pop), 2)
+  ) %>%
+  kbl(caption = "Resumen de Datos de Gapminder") %>%
+  kable_styling(
+    bootstrap_options = c("hover", "condensed", "striped"), 
+    full_width = F, 
+    font_size = 14,
+    # font_color = "gray2"
+    # position = "l"
+    ) %>%
+  row_spec(0, color = "black", bold = T)
+
+table_personalized
+
+```
+
+- Interpretación:
+
+Para el año 2007 el continente de Oceania presenta la media de esperanza de vida mas alta con 80.72 años y tambien una media de PIB per capita mayor con USD29810.188, relacionando las muy buenas condicones de vida de la población. Sin embargo el continente de Asia contempla una media poblacional de 115.513.752 habitantes, mucho mayor a la de los otros continentes.
+
+<hr>
+<div style="text-align: center;">
+<p><strong>Construcción de informes en R</strong> <br>
+<strong>Desarrollado por: Crispthofer Rincon</strong> <br>
+<strong>2023.</strong></p>
+</div>

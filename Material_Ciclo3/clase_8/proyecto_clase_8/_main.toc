@@ -1,0 +1,42 @@
+\contentsline {chapter}{Motivación}{5}{chapter*.2}%
+\contentsline {section}{Uso}{5}{section*.3}%
+\contentsline {section}{Render book}{5}{section*.4}%
+\contentsline {section}{Preview book}{6}{section*.5}%
+\contentsline {chapter}{Introduccion a Markdown en RStudio}{7}{chapter*.6}%
+\contentsline {section}{¿Qué es Markdown?}{7}{section*.7}%
+\contentsline {subsection}{Ventajas de Markdown}{7}{section*.8}%
+\contentsline {section}{Sintaxis basica de Markdown}{7}{section*.9}%
+\contentsline {subsection}{Ejemplos:}{8}{section*.10}%
+\contentsline {chapter}{\numberline {1}Encabezados 1}{9}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Encabezados 2}{9}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Encabezados 3}{9}{subsection.1.1.1}%
+\contentsline {subsection}{Dar formato al texto}{9}{section*.11}%
+\contentsline {subsection}{Crear Listas}{9}{section*.12}%
+\contentsline {section}{Recursos adicionales}{10}{section*.13}%
+\contentsline {chapter}{Inclusión de código en Informes RMarkdown}{11}{chapter*.14}%
+\contentsline {section}{Chunks de código}{11}{section*.15}%
+\contentsline {section}{Carga y muestra de una Base de datos (DB)}{12}{section*.16}%
+\contentsline {section}{Estadisticas descriptivas}{13}{section*.17}%
+\contentsline {section}{Gráficos}{14}{section*.18}%
+\contentsline {section}{Tablas}{15}{section*.19}%
+\contentsline {chapter}{Introducción}{17}{chapter*.20}%
+\contentsline {section}{Nivel 1}{17}{section*.21}%
+\contentsline {subsection}{Subnivel 1.1}{17}{section*.22}%
+\contentsline {subsection}{Subnivel 1.2}{17}{section*.23}%
+\contentsline {section}{Nivel 2}{17}{section*.24}%
+\contentsline {subsection}{Subnivel 2.1}{17}{section*.25}%
+\contentsline {subsubsection}{Subsubnivel 2.1.1}{17}{section*.26}%
+\contentsline {section}{Nivel 3}{17}{section*.27}%
+\contentsline {subsection}{Subnivel 3.1}{17}{section*.28}%
+\contentsline {section}{Conclusión}{18}{section*.29}%
+\contentsline {chapter}{\numberline {2}Footnotes and citations}{19}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Footnotes}{19}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Citations}{19}{section.2.2}%
+\contentsline {chapter}{\numberline {3}Blocks}{21}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Equations}{21}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Theorems and proofs}{21}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Callout blocks}{21}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Sharing your book}{23}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Publishing}{23}{section.4.1}%
+\contentsline {section}{\numberline {4.2}404 pages}{23}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Metadata for sharing}{23}{section.4.3}%

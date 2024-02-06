@@ -1,0 +1,144 @@
+---
+title: "Taller de Repaso y Análisis de Datos en RMarkdown"
+author:
+  name: "Crispthofer Rincon"
+  affiliation: "Pacific Task Force"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: flatly
+    code_folding: show
+    toc: yes
+    toc_float: yes
+    toc_depth: 3
+    collapsed: true
+    smooth_scroll: false
+    number_section: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+![](datascientist.jpg)
+
+# ¿Quién soy?
+Hola, soy Crispthofer Rincon, ingeniero industrial con experiencia en marketing comercial y social, community management y desarrollo de software. En los últimos 6 meses me he enfocado en fortalecer mis habilidades en R y Python para el área de Data Science.
+
+Me apasiona utilizar los datos para resolver problemas y generar un impacto positivo en la sociedad, especialmente en mi región, América Latina y el Caribe.
+
+Soy miembro de la organización social Amafrocol que implementa proyectos en favor de mujeres afrocolombianas y sus familias. Creo que el análisis de datos puede ser una herramienta poderosa para apoyar el desarrollo de estas comunidades.
+
+# Mi familia
+
+## Abuelos
+
+  - **Luis Rincon**
+  - **Sofia Arambulo**
+  - **Samuel Murrain**
+  - **Ana Mosquera**
+
+## Padres
+
+  - _Cristobal Rincon Arambulo_
+  - _Mildred Murrain Mosquera_
+  
+## Hermanos
+
+  - Laura Rincon Murrain
+  - Alberto Rincon Murrain
+  - Simon Rincon Murrain
+  - Cecilia Rincon Murrain
+
+## Estadísticas descriptivas
+
+### Tabla de Edad y Estatura de miembros de mi familia
+
+```{r}
+data_familia <- data.frame(
+  nombre = c("Laura", "Alberto", "Simon", "Cecilia", "Cristobal", "Luis", "Samuel", "Sofia", "Mildred", "Ana"),
+  edad = c(20, 15, 30, 40, 70, 89, 92, 90, 69, 91),
+  estatura = c(1.50, 1.90, 1.70, 1.80, 1.60, 1.70, 1.65, 1.75, 1.82, 1.90)
+)
+
+library(openxlsx)
+library(readxl)
+
+write.xlsx(data_familia, "datos_familia.xlsx")
+
+datos_familia <- read.xlsx("datos_familia.xlsx")
+
+# head(datos_familia)
+# tail(datos_familia)
+datos_familia
+
+```
+
+
+### Variable Edad
+```{r}
+summary(data_familia$edad)
+```
+- Interpretación
+
+  a. El minimo de edad de los miembros de mi familia es de 15 años
+  b. El maximo de edad de los miembros de mi familia es de 92 años
+  c. El 25% de los miembros de mi familia es menor a 33 años
+  d. El 50% de los miembros de mi familia es menor a 61 años
+  e. El 75% de los miembros de mi familia es menor a 90 años
+  f. El promedio de edad de mi familia es de 60.6 años
+  g. La edad en la que tiende a centrarse mi familia es de 69.5 años
+
+### Variable Estatura
+```{r}
+summary(data_familia$estatura)
+```
+- Interpretación
+
+  a. El minimo de estatura de los miembros de mi familia es de 1.5 metros
+  b. El maximo de estatura de los miembros de mi familia es de 1.9 metros
+  c. El 25% de los miembros de mi familia tiene estatura menor a 1.67 metros
+  d. El 50% de los miembros de mi familia tiene estatura menor a 1.73 metros
+  e. El 75% de los miembros de mi familia tiene estatura menor a 1.82 metros
+  f. El promedio de estatura de mi familia es de 1.732 metros
+  g. La estatura en la que tiende a centrarse mi familia es es 1.725 metros
+
+
+## Gráficos
+
+### Histograma de variable Edad
+
+```{r}
+hist(
+  data_familia$edad,
+  main = "Histograma de Edades",
+  xlab = "Edad", col = "purple1"
+  
+  )
+
+```
+
+### Histograma de variable Estatura
+
+```{r}
+hist(
+  data_familia$estatura,
+  main = "Histograma de Estaturas (metros)",
+  xlab = "Estaturas", col = "cyan4"
+  )
+
+```
+
+### Gráfico de dispersión de Edad vs. Estatura
+
+```{r}
+plot(
+  data_familia$edad, data_familia$estatura,
+  xlab = "Edad", ylab = "Estatura (metros)",
+  main = "Grafico de dispersion de Edad vs. Estatura",
+  pch = 20,
+  #type='o',
+  col= 'orange'
+  )
+```
+

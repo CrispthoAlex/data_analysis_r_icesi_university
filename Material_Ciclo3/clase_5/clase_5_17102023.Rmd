@@ -1,0 +1,137 @@
+---
+title: "Personalización de gráficos interactivos con ggplotly y Tablas con Kable en Rmarkdown"
+author: "Crispthofer Rincon"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+      theme: journal
+      code_folding: show
+      toc: yes
+      toc_float: yes
+      toc_depth: 3
+      collapsed: true
+      smooth_scroll: false
+      number_section: yes
+      # css: styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+```{r}
+library(ggplot2)
+library(plotly)
+
+#######################################
+# Check https://r-graph-gallery.com/  #
+#######################################
+
+# conjunto_datos <- data.frame(
+#   anio = 2010:2020,
+#   ventas = c(
+#     600, 500, 550, 700, 650, 715,
+#     680, 690, 815, 900, 1100
+#   )
+# )
+
+set.seed(733) # establish a same numbers random
+n_observaciones <- 20
+conjunto_datos <- data.frame(
+  anio = 2000:2019,
+  ventas =round( runif(n = n_observaciones, min = 800, max = 1500), 2)
+)
+
+
+```
+
+# Ejemplos de gráficos interactivos {.tabset .tabset-pills}
+
+## Gráfico de Barras Interactivo
+
+```{r}
+
+grafico_barras_interactivo <- ggplot(
+  conjunto_datos, 
+  aes(x = anio, y = ventas,
+      text = paste("Año:", anio,"<br>Ventas", ventas)
+      )
+) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Ventas anuales", x = "Año", y = "Ventas") +
+  theme_minimal()
+
+grafico_barras_interactivo <- ggplotly(
+  grafico_barras_interactivo,
+  tooltip= "text"
+  )
+# show graphic
+grafico_barras_interactivo
+
+```
+
+## Gráfico de Puntos Interactivo
+
+```{r}
+
+grafico_puntos_interactivo <- ggplot(
+  conjunto_datos, 
+  aes(x = anio, y = ventas,
+      text = paste("Año:", anio,"<br>Ventas", ventas)
+      )
+) +
+  geom_point(colour= "forestgreen", size = 3) +
+  labs(title = "Ventas anuales", x = "Año", y = "Ventas") +
+  theme_minimal()
+
+grafico_puntos_interactivo <- ggplotly(
+  grafico_puntos_interactivo,
+  tooltip= "text"
+  )
+# show graphic
+grafico_puntos_interactivo
+
+```
+## Gráfico de caja (Boxplot) Interactivo
+
+```{r}
+
+grafico_cajas_interactivo <- ggplot(
+  conjunto_datos, 
+  aes(x = "Ventas", y = ventas,
+      text = paste("Ventas", ventas)
+      )
+) +
+  geom_boxplot(fill = "orange") +
+  labs(title = "Ventas anuales", x = "Año", y = "Ventas") +
+  theme_minimal()
+
+grafico_cajas_interactivo <- ggplotly(
+  grafico_cajas_interactivo,
+  tooltip= "text"
+  )
+# show graphic
+grafico_cajas_interactivo
+
+```
+
+# Tabla personalizada (uso de kable) {.tabset .tabset-pills}
+```{r}
+# install.packages("kableExtra")
+library(kableExtra)
+
+table_personalized <- conjunto_datos %>%
+  kbl(caption = "Ventas anuales") %>%
+  kable_styling(
+    bootstrap_options = c("hover", "condensed", "striped"), 
+    full_width = F, 
+    font_size = 14,
+    position = "l"
+    ) %>%
+  row_spec(0, background = "skyblue")
+
+table_personalized
+
+```
+
+

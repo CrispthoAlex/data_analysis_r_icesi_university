@@ -1,0 +1,117 @@
+---
+title: "clase_2_05102023"
+author: "Crispthofer Rincon"
+date: "2023-10-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Inclusión de código en Informes RMarkdown
+
+Exploraremos como incluir y ejecutar código en informes RMArkdown. Se aprendera sobre los "chunks" de código y cómo cargar y examinar una base de datos en RMarkdown
+
+## Chunks de código
+
+Los "chunks" de código son bloques de código que puedes incluir en tu informe. Puede ser ejecutado y mostrar los resultados directamente en el informe.
+
+```{r Ejemplos de código en chunk}
+# Ejemplo de chunk en R
+x <- 1:5
+y <- 1:12
+z <- 1:20
+sum_x <- sum(x)
+sum_x
+mean_x <- mean(x)
+mean_x
+
+sum_y <- sum(y)
+sum_y
+mean_y <- mean(y)
+mean_y
+
+sum_z <- sum(z)
+sum_z
+mean_z <- mean(z)
+mean_z
+
+```
+
+# Carga y muestra de una Base de datos (DB)
+ Para cargar una DB en Markdown, primero debemos asegurar tener la biblioteca adecuada, instalada. Se usara la biblioteca  `readxl` para cargar la DB que están en un archivo excell (`.xls` o `.xls`)
+ 
+```{r}
+# Ejemplo de creación de archivo de excell con R
+
+class2_data <- data.frame(
+  Name = c(
+    "Luis", "Maria", "Xavier", 
+    "Laura", "Alberto", "Felipe",
+    "Augusto", "Julio", "Ximena"
+    ),
+  Age = c(
+    20, 37, 30, 36, 38, 25, 24, 31, 41
+  ),
+  Score = c(
+    90, 87, 85, 88, 89, 90, 91, 91, 75
+  )
+)
+
+# Exportar dataframe a un archivo excell
+library(openxlsx)
+
+write.xlsx(class2_data, file = "clase_2_data.xlsx")
+
+```
+
+```{r}
+# Verificación de creación de DB
+
+data_class <- read.xlsx("clase_2_data.xlsx")
+
+head(data_class)
+tail(data_class)
+
+```
+
+# Estadisticas descriptivas
+
+```{r}
+# Clacular las estadisticas para variables Age y Score
+
+summary(data_class$Age)
+summary(data_class$Score)
+
+```
+# Gráficos
+
+```{r}
+# Crear histograma variable Age
+
+hist(
+  data_class$Age,
+  main = "Histograma de Edades",
+  xlab = "Edad", col = "orange"
+  )
+
+# Crear gráfico de dispersion Age vs Score
+
+plot(
+  data_class$Age, data_class$Score,
+  xlab = "Age", ylab = "Score",
+  main = "Gráfico de dispersión: Age vs Score",
+  pch = 20
+)
+
+```
+
+
+# Tablas
+```{r}
+table(data_class$Name)
+```
+
+
+

@@ -1,0 +1,48 @@
+h1{
+  font-size:36px;
+   color: #1c4a65;
+}
+
+h2 {
+  font-size:28px;
+  color: #1c4a65;
+}
+
+h3{
+  color: #1c4a65;
+}
+
+h4{
+  color: #1c4a65;
+}
+
+#TOC {
+  background: url("cenfi_img.png");
+  background-size: contain;
+  padding-top: 80px !important;
+  background-repeat: no-repeat;
+}
+
+.titulo{
+  text-align: center;  
+}
+
+figcaption{
+  font-size: x-small;  
+}
+
+body{
+  text-align:justify;  
+}
+
+.dev{
+  text-align: center;
+  font-size: 14px;  
+}
+
+hr {
+margin-top: 20px;
+margin-bottom: 20px;
+border: 0;
+border-top: 1px solid #eee;
+}

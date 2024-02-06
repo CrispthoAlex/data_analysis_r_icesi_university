@@ -1,0 +1,35 @@
+```{r setup3, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introducción {-}
+
+Este es un ejemplo de un documento Markdown con varios niveles y subniveles.
+
+## Nivel 1 {-}
+
+### Subnivel 1.1 {-}
+
+Este es un subnivel dentro del Nivel 1.
+
+### Subnivel 1.2 {-}
+
+Otro subnivel dentro del Nivel 1.
+
+## Nivel 2 {-}
+
+### Subnivel 2.1 {-}
+
+Dentro del Nivel 2, aquí tenemos un subnivel.
+
+#### Subsubnivel 2.1.1 {-}
+
+¡Incluso podemos tener subsubniveles!
+
+## Nivel 3 {-}
+
+### Subnivel 3.1 {-}
+
+Y aquí hay otro nivel 3.
+
+## Conclusión {-}

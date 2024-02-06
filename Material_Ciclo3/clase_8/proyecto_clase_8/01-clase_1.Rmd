@@ -1,0 +1,82 @@
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Introduccion a Markdown en RStudio {-}
+
+n esta clase, aprenderemos los conceptos básicos de RStudio y Markdown. Markdown es una sintaxis ligera y fácil de usar que te permite darle formato el texto de manera sencilla y eficiente en tus informes y documentos.
+
+
+## ¿Qué es Markdown? {-}
+
+Markdown es un lenguaje de marcado ligero que permite dar formato al texto de manera simple. Es ampliamente utilizado en la generación de informes, documentación, blogs y más. Markdown es ideal para crear contenido de manera rápida y sin complicaciones
+
+### Ventajas de Markdown {-}
+
+- **Sencillo**: La sintaxis de Markdown es fácil de aprender y usar
+- **Legible**: Los documentos Markdown son legibles en formato plano
+- **Portátil**: Podemos usarla en varios editores de texto
+- **Versátil**: Es compatible con HTML, y esto permite combinarlo con otros elementos
+- **Reproducible**: Facilita la reproducción de resultados y la colaboración en proyectos.
+
+## Sintaxis basica de Markdown {-}
+Podemos crear encabezados utilizando el simbolo  `#`. Cuantos mas `#`, más pequeño va a ser el encabezado
+
+### Ejemplos: {-}
+
+- # Encabezados 1
+- ## Encabezados 2
+- ### Encabezados 3
+
+### Dar formato al texto {-}
+Puede saplicar formato al texto de la siguiente manera:
+
+- `**Negrilla**`: **texto**
+- `_Cursiva_` o `*Cursiva*`: *texto* o _texto_
+- `~~Tachado~~`: ~~texto~~
+
+### Crear Listas {-}
+Creacion de listas ordenadas y no ordenadas
+
+**Listas no ordenadas**
+- Elemento 1
+
+- Elemento 2
+
+  - Elemento 2.1
+  
+  - Elemento 2.2
+  
+- Elemento 3
+
+  - Elemento 3.1
+
+
+**Listas ordenadas**
+
+Si lo que queremos es crear una lista ordenada, debemos introducir un número con un punto directamente. 
+
+1. Primer elemento
+2. Segundo elemento
+3. Tercer elemento
+
+
+## Recursos adicionales {-}
+
+[**Markdown Cheat Sheet**](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+
+[**Markdown Guide**](https://guides.github.com/features/mastering-markdown/)
+
+[**Markdown Tutorial**](https://www.markdowntutorial.com)
+
+
+<hr>
+<div style="text-align: center;">
+**Construccion de informes en R**
+<br>
+**Desarrollado por: [Crispthofer Rincon](https://linkedin.com/in/carmurrain)**
+<br>
+_**2023**_
+</div>
+
